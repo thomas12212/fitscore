@@ -50,7 +50,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error creating coach:", error);
     return NextResponse.json(
-      { error: "Failed to create coach" },
+      { error: "Failed to create coach: " + error.message },
       { status: 500 }
     );
   }

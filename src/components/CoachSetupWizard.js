@@ -24,6 +24,7 @@ export default function CoachSetupWizard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState({ quiz: false, dashboard: false });
+  const [showPassword, setShowPassword] = useState(false);
 
   const templates = getTemplateList();
   const currentStep = STEPS[step];
@@ -309,21 +310,30 @@ export default function CoachSetupWizard() {
 
               <div>
                 <label className="block text-sm text-muted mb-1">Dashboard Password</label>
-                <input
-                  type="password"
-                  placeholder="Minimum 6 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl bg-elevated border-2 text-foreground placeholder-muted outline-none transition-colors ${
-                    errors.password ? "border-red-500" : "border-border focus:border-accent"
-                  }`}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Minimum 6 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={`w-full px-4 py-3 pr-12 rounded-xl bg-elevated border-2 text-foreground placeholder-muted outline-none transition-colors ${
+                      errors.password ? "border-red-500" : "border-border focus:border-accent"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground text-sm transition-colors"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm text-muted mb-1">Confirm Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Confirm your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
