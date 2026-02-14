@@ -9,6 +9,7 @@ export default function DashboardAuth({ coachId, coachName, plan }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -71,7 +72,7 @@ export default function DashboardAuth({ coachId, coachName, plan }) {
 
   if (authenticated) {
     return (
-      <div className="min-h-screen px-4 py-8 max-w-4xl mx-auto">
+      <div className="min-h-screen px-4 py-8 max-w-5xl mx-auto">
         <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-heading text-gradient-accent">
@@ -132,15 +133,24 @@ export default function DashboardAuth({ coachId, coachName, plan }) {
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="password"
-            placeholder="Dashboard password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={`w-full px-4 py-3 rounded-xl bg-elevated border-2 text-foreground placeholder-muted outline-none transition-colors ${
-              error ? "border-red-500" : "border-border focus:border-accent"
-            }`}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Dashboard password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`w-full px-4 py-3 pr-12 rounded-xl bg-elevated border-2 text-foreground placeholder-muted outline-none transition-colors ${
+                error ? "border-red-500" : "border-border focus:border-accent"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground text-sm transition-colors"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

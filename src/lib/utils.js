@@ -5,6 +5,10 @@ export function generateCoachId() {
   return nanoid(8);
 }
 
+export function generateQuizId() {
+  return nanoid(10);
+}
+
 export async function hashPassword(password) {
   return bcrypt.hash(password, 10);
 }
@@ -14,7 +18,7 @@ export async function verifyPassword(password, hash) {
 }
 
 export function buildCsv(leads) {
-  const headers = ["Name", "Email", "Score", "Max Score", "Percentage", "Tier", "Date"];
+  const headers = ["Name", "Email", "Score", "Max Score", "Percentage", "Tier", "Quiz", "Status", "Date"];
   const rows = leads.map((lead) => [
     escapeCsvField(lead.name),
     escapeCsvField(lead.email),
@@ -22,6 +26,8 @@ export function buildCsv(leads) {
     lead.max_score,
     `${lead.percentage}%`,
     escapeCsvField(lead.tier),
+    escapeCsvField(lead.quiz_name || ""),
+    lead.status || "new",
     lead.created_at,
   ]);
 

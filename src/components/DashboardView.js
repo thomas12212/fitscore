@@ -1,15 +1,39 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { getTemplateList } from "@/lib/templates";
 import StatsCards from "./StatsCards";
 import LeadsTable from "./LeadsTable";
 
 export default function DashboardView({ coachId, password, plan }) {
   const [data, setData] = useState(null);
+  const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sort, setSort] = useState("date_desc");
   const [tierFilter, setTierFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [copied, setCopied] = useState(null);
+
+  // New quiz form state
+  const [showNewQuiz, setShowNewQuiz] = useState(false);
+  const [newQuizTemplate, setNewQuizTemplate] = useState("");
+  const [newQuizName, setNewQuizName] = useState("");
+  const [creatingQuiz, setCreatingQuiz] = useState(false);
+
+  const templates = getTemplateList();
+
+  // Fetch quizzes
+  const fetchQuizzes = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/coaches/${coachId}`, {});
+      if (res.ok) {
+        const json = await res.json();
+        setQuizzes(json.quizzes || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch quizzes:", err);
+    }
+  }, [coachId]);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -35,7 +59,8 @@ export default function DashboardView({ coachId, password, plan }) {
 
   useEffect(() => {
     fetchLeads();
-  }, [fetchLeads]);
+    fetchQuizzes();
+  }, [fetchLeads, fetchQuizzes]);
 
   async function handleStatusChange(leadId, newStatus) {
     try {
@@ -79,6 +104,46 @@ export default function DashboardView({ coachId, password, plan }) {
     }
   }
 
+  async function handleCreateQuiz() {
+    if (!newQuizTemplate) return;
+    setCreatingQuiz(true);
+    try {
+      const res = await fetch("/api/quizzes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-dashboard-password": password,
+        },
+        body: JSON.stringify({
+          coachId,
+          templateId: newQuizTemplate,
+          name: newQuizName.trim() || undefined,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Failed to create quiz");
+        setCreatingQuiz(false);
+        return;
+      }
+
+      setShowNewQuiz(false);
+      setNewQuizTemplate("");
+      setNewQuizName("");
+      fetchQuizzes();
+    } catch {
+      alert("Failed to create quiz");
+    }
+    setCreatingQuiz(false);
+  }
+
+  function copyLink(url, quizId) {
+    navigator.clipboard.writeText(url);
+    setCopied(quizId);
+    setTimeout(() => setCopied(null), 2000);
+  }
+
   if (loading && !data) {
     return (
       <div className="text-center py-12">
@@ -106,6 +171,87 @@ export default function DashboardView({ coachId, password, plan }) {
 
   return (
     <div className="animate-fade-up">
+      {/* Quizzes Section */}
+      <div className="bg-surface rounded-xl p-5 mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-heading text-gradient-accent">YOUR QUIZZES</h2>
+          <button
+            onClick={() => setShowNewQuiz((v) => !v)}
+            className="btn-secondary text-sm py-1.5 px-3"
+          >
+            {showNewQuiz ? "Cancel" : "+ New Quiz"}
+          </button>
+        </div>
+
+        {/* New quiz form */}
+        {showNewQuiz && (
+          <div className="bg-elevated rounded-xl p-4 mb-4 space-y-3">
+            <div>
+              <label className="block text-sm text-muted mb-1">Template</label>
+              <select
+                value={newQuizTemplate}
+                onChange={(e) => setNewQuizTemplate(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-surface border border-border text-foreground text-sm outline-none"
+              >
+                <option value="">Select a template...</option>
+                {templates.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.icon} {t.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm text-muted mb-1">Quiz Name (optional)</label>
+              <input
+                type="text"
+                placeholder="e.g. Spring Bulking Challenge"
+                value={newQuizName}
+                onChange={(e) => setNewQuizName(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-surface border border-border text-foreground placeholder-muted text-sm outline-none"
+              />
+            </div>
+            <button
+              onClick={handleCreateQuiz}
+              disabled={!newQuizTemplate || creatingQuiz}
+              className={`btn-primary text-sm py-2 px-4 ${!newQuizTemplate || creatingQuiz ? "opacity-60" : ""}`}
+            >
+              {creatingQuiz ? "Creating..." : "Create Quiz"}
+            </button>
+          </div>
+        )}
+
+        {/* Quiz list */}
+        {quizzes.length === 0 ? (
+          <p className="text-muted text-sm">No quizzes yet. Create one to get started!</p>
+        ) : (
+          <div className="space-y-2">
+            {quizzes.map((quiz) => (
+              <div
+                key={quiz.id}
+                className="flex flex-wrap items-center justify-between gap-2 bg-elevated rounded-lg px-4 py-3"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{quiz.name}</p>
+                  <p className="text-xs text-muted truncate">{quiz.quizUrl}</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  {!quiz.active && (
+                    <span className="text-xs text-muted bg-surface px-2 py-0.5 rounded">Inactive</span>
+                  )}
+                  <button
+                    onClick={() => copyLink(quiz.quizUrl, quiz.id)}
+                    className="text-xs font-medium px-3 py-1.5 rounded-lg bg-surface border border-border hover:border-accent transition-colors"
+                  >
+                    {copied === quiz.id ? "Copied!" : "Copy Link"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <StatsCards stats={data.stats} />
 
       {/* Tier Distribution Bar */}

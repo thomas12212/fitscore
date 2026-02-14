@@ -42,28 +42,31 @@ export async function GET(request, { params }) {
     const statusFilter = searchParams.get("status");
     const sortParam = searchParams.get("sort") || "date_desc";
 
-    // Build query
-    let sql = "SELECT * FROM leads WHERE coach_id = ?";
+    // Build query — join with quizzes to get quiz name
+    let sql = `SELECT l.*, q.name as quiz_name
+               FROM leads l
+               LEFT JOIN quizzes q ON l.quiz_id = q.id
+               WHERE l.coach_id = ?`;
     const args = [coachId];
 
     if (tierFilter) {
-      sql += " AND tier = ?";
+      sql += " AND l.tier = ?";
       args.push(tierFilter);
     }
 
     if (statusFilter) {
-      sql += " AND status = ?";
+      sql += " AND l.status = ?";
       args.push(statusFilter);
     }
 
     // Sorting
     const sortMap = {
-      date_desc: "created_at DESC",
-      date_asc: "created_at ASC",
-      score_desc: "percentage DESC",
-      score_asc: "percentage ASC",
+      date_desc: "l.created_at DESC",
+      date_asc: "l.created_at ASC",
+      score_desc: "l.percentage DESC",
+      score_asc: "l.percentage ASC",
     };
-    sql += ` ORDER BY ${sortMap[sortParam] || "created_at DESC"}`;
+    sql += ` ORDER BY ${sortMap[sortParam] || "l.created_at DESC"}`;
 
     const leadsResult = await db.execute({ sql, args });
 
@@ -97,6 +100,8 @@ export async function GET(request, { params }) {
       percentage: row.percentage,
       tier: row.tier,
       status: row.status || "new",
+      quizName: row.quiz_name || null,
+      quizId: row.quiz_id || null,
       categoryScores: JSON.parse(row.category_scores || "{}"),
       createdAt: row.created_at,
     }));

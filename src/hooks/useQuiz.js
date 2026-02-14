@@ -48,7 +48,7 @@ export default function useQuiz(template) {
   }, []);
 
   const submitLead = useCallback(
-    async (name, email, coachId) => {
+    async (name, email, coachId, quizId) => {
       setIsSubmitting(true);
       setLeadData({ name, email });
 
@@ -68,6 +68,7 @@ export default function useQuiz(template) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             coachId,
+            quizId,
             name,
             email,
             score: scoreData.score,

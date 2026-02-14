@@ -5,7 +5,7 @@ import { validateEmail } from "@/lib/utils";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { coachId, name, email, score, maxScore, percentage, tier, answers, categoryScores } = body;
+    const { coachId, quizId, name, email, score, maxScore, percentage, tier, answers, categoryScores } = body;
 
     if (!coachId || !name?.trim() || !email?.trim()) {
       return NextResponse.json(
@@ -58,10 +58,11 @@ export async function POST(request) {
     }
 
     const result = await db.execute({
-      sql: `INSERT INTO leads (coach_id, name, email, score, max_score, percentage, tier, answers, category_scores)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      sql: `INSERT INTO leads (coach_id, quiz_id, name, email, score, max_score, percentage, tier, answers, category_scores)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         coachId,
+        quizId || null,
         name.trim(),
         email.trim().toLowerCase(),
         score,

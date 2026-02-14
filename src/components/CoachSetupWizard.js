@@ -396,33 +396,24 @@ export default function CoachSetupWizard() {
                 </div>
               </div>
 
-              <div className="bg-surface rounded-xl p-4">
-                <label className="block text-sm text-muted mb-2">Dashboard Link (for you)</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={result.dashboardUrl}
-                    readOnly
-                    className="flex-1 px-3 py-2 rounded-lg bg-elevated border border-border text-foreground text-sm outline-none"
-                  />
-                  <button
-                    onClick={() => copyToClipboard(result.dashboardUrl, "dashboard")}
-                    className="btn-primary px-4 py-2 text-sm"
-                  >
-                    {copied.dashboard ? "Copied!" : "Copy"}
-                  </button>
-                </div>
-              </div>
             </div>
 
-            <a
-              href={result.quizUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary inline-block no-underline"
-            >
-              Preview Your Quiz
-            </a>
+            <div className="flex flex-col gap-3">
+              <a
+                href={result.dashboardUrl}
+                className="btn-primary inline-block no-underline text-center"
+              >
+                Go to Dashboard
+              </a>
+              <a
+                href={result.quizUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary inline-block no-underline text-center"
+              >
+                Preview Your Quiz
+              </a>
+            </div>
           </div>
         )}
       </div>

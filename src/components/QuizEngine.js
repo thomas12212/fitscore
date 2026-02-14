@@ -5,7 +5,7 @@ import QuizQuestion from "./QuizQuestion";
 import QuizLeadCapture from "./QuizLeadCapture";
 import QuizResults from "./QuizResults";
 
-export default function QuizEngine({ template, coachId, coachName, customizations }) {
+export default function QuizEngine({ template, coachId, quizId, coachName, customizations }) {
   const {
     screen,
     currentQuestion,
@@ -60,7 +60,7 @@ export default function QuizEngine({ template, coachId, coachName, customization
 
         {screen === SCREENS.LEAD_CAPTURE && (
           <QuizLeadCapture
-            onSubmit={(name, email) => submitLead(name, email, coachId)}
+            onSubmit={(name, email) => submitLead(name, email, coachId, quizId)}
             isSubmitting={isSubmitting}
           />
         )}

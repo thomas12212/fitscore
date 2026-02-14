@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getTemplate } from "@/lib/templates";
-import { generateCoachId, hashPassword } from "@/lib/utils";
+import { generateCoachId, generateQuizId, hashPassword } from "@/lib/utils";
 
 export async function POST(request) {
   try {
@@ -11,7 +11,8 @@ export async function POST(request) {
     if (!name || !name.trim()) {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
-    if (!templateId || !getTemplate(templateId)) {
+    const template = getTemplate(templateId);
+    if (!templateId || !template) {
       return NextResponse.json({ error: "Invalid template" }, { status: 400 });
     }
     if (!password || password.length < 6) {
@@ -21,15 +22,17 @@ export async function POST(request) {
       );
     }
 
-    const id = generateCoachId();
+    const coachId = generateCoachId();
+    const quizId = generateQuizId();
     const passwordHash = await hashPassword(password);
     const db = getDb();
 
+    // Create coach
     await db.execute({
       sql: `INSERT INTO coaches (id, name, template_id, customizations, dashboard_password_hash)
             VALUES (?, ?, ?, ?, ?)`,
       args: [
-        id,
+        coachId,
         name.trim(),
         templateId,
         JSON.stringify(customizations || {}),
@@ -37,13 +40,27 @@ export async function POST(request) {
       ],
     });
 
+    // Create first quiz
+    await db.execute({
+      sql: `INSERT INTO quizzes (id, coach_id, template_id, name, customizations)
+            VALUES (?, ?, ?, ?, ?)`,
+      args: [
+        quizId,
+        coachId,
+        templateId,
+        template.name,
+        JSON.stringify(customizations || {}),
+      ],
+    });
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     return NextResponse.json(
       {
-        coachId: id,
-        quizUrl: `${appUrl}/quiz/${id}`,
-        dashboardUrl: `${appUrl}/dashboard/${id}`,
+        coachId,
+        quizId,
+        quizUrl: `${appUrl}/quiz/${quizId}`,
+        dashboardUrl: `${appUrl}/dashboard/${coachId}`,
       },
       { status: 201 }
     );

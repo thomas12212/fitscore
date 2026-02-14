@@ -37,7 +37,10 @@ export async function GET(request, { params }) {
     }
 
     const leadsResult = await db.execute({
-      sql: "SELECT * FROM leads WHERE coach_id = ? ORDER BY created_at DESC",
+      sql: `SELECT l.*, q.name as quiz_name
+            FROM leads l
+            LEFT JOIN quizzes q ON l.quiz_id = q.id
+            WHERE l.coach_id = ? ORDER BY l.created_at DESC`,
       args: [coachId],
     });
 

@@ -63,6 +63,7 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
             <tr className="border-b border-border">
               <th className="text-left p-4 text-muted font-medium">Name</th>
               <th className="text-left p-4 text-muted font-medium">Email</th>
+              <th className="text-left p-4 text-muted font-medium">Quiz</th>
               <th
                 className="text-left p-4 text-muted font-medium cursor-pointer hover:text-foreground"
                 onClick={() => toggleSort("score")}
@@ -87,6 +88,7 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
                 <tr key={lead.id} className="border-b border-border last:border-0 hover:bg-elevated transition-colors">
                   <td className="p-4 font-medium">{lead.name}</td>
                   <td className="p-4 text-muted">{lead.email}</td>
+                  <td className="p-4 text-muted text-xs">{lead.quizName || "—"}</td>
                   <td className="p-4">
                     <span className="font-bold">{lead.percentage}%</span>
                     <span className="text-muted text-xs ml-1">
@@ -138,6 +140,9 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
                 <div>
                   <p className="font-medium">{lead.name}</p>
                   <p className="text-sm text-muted">{lead.email}</p>
+                  {lead.quizName && (
+                    <p className="text-xs text-muted mt-0.5">{lead.quizName}</p>
+                  )}
                 </div>
                 <span className="text-xl font-heading">{lead.percentage}%</span>
               </div>
