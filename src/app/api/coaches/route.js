@@ -34,7 +34,7 @@ export async function POST(request) {
       args: [
         coachId,
         name.trim(),
-        email?.trim() || null,
+        email?.trim().toLowerCase() || null,
         templateId,
         JSON.stringify(customizations || {}),
         passwordHash,

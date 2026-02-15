@@ -10,9 +10,14 @@ export default function HomePage() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
           <span className="text-xl font-heading text-gradient-accent">FITSCORE</span>
-          <Link href="/create" className="btn-primary text-sm py-2 px-5 no-underline">
-            Create Quiz
-          </Link>
+          <div className="flex gap-3 items-center">
+            <Link href="/login" className="text-sm text-muted hover:text-foreground transition-colors no-underline">
+              Coach Login
+            </Link>
+            <Link href="/create" className="btn-primary text-sm py-2 px-5 no-underline">
+              Create Quiz
+            </Link>
+          </div>
         </div>
       </nav>
 
