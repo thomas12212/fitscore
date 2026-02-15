@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 
 const warmthColors = {
   "Just Getting Started": { bg: "#6b728020", text: "#6b7280", border: "#6b728040" },
@@ -16,7 +17,10 @@ const statusConfig = {
 
 const statusOrder = ["new", "contacted", "booked", "closed"];
 
-export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }) {
+export default function LeadsTable({ leads, sort, onSortChange, onStatusChange, onNotesChange }) {
+  const [editingNotes, setEditingNotes] = useState(null);
+  const [noteValue, setNoteValue] = useState("");
+
   function formatDate(dateStr) {
     const d = new Date(dateStr);
     return d.toLocaleDateString("en-US", {
@@ -27,8 +31,8 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
   }
 
   function getSortIcon(field) {
-    if (sort === `${field}_desc`) return " ↓";
-    if (sort === `${field}_asc`) return " ↑";
+    if (sort === `${field}_desc`) return " \u2193";
+    if (sort === `${field}_asc`) return " \u2191";
     return "";
   }
 
@@ -44,6 +48,18 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
     const currentIndex = statusOrder.indexOf(lead.status || "new");
     const nextStatus = statusOrder[(currentIndex + 1) % statusOrder.length];
     onStatusChange(lead.id, nextStatus);
+  }
+
+  function startEditNotes(lead) {
+    setEditingNotes(lead.id);
+    setNoteValue(lead.notes || "");
+  }
+
+  function saveNotes(leadId) {
+    if (onNotesChange) {
+      onNotesChange(leadId, noteValue);
+    }
+    setEditingNotes(null);
   }
 
   if (leads.length === 0) {
@@ -72,6 +88,7 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
               </th>
               <th className="text-left p-4 text-muted font-medium">Tier</th>
               <th className="text-left p-4 text-muted font-medium">Status</th>
+              <th className="text-left p-4 text-muted font-medium">Notes</th>
               <th
                 className="text-left p-4 text-muted font-medium cursor-pointer hover:text-foreground"
                 onClick={() => toggleSort("date")}
@@ -88,7 +105,7 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
                 <tr key={lead.id} className="border-b border-border last:border-0 hover:bg-elevated transition-colors">
                   <td className="p-4 font-medium">{lead.name}</td>
                   <td className="p-4 text-muted">{lead.email}</td>
-                  <td className="p-4 text-muted text-xs">{lead.quizName || "—"}</td>
+                  <td className="p-4 text-muted text-xs">{lead.quizName || "\u2014"}</td>
                   <td className="p-4">
                     <span className="font-bold">{lead.percentage}%</span>
                     <span className="text-muted text-xs ml-1">
@@ -121,6 +138,34 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
                       {status.label}
                     </button>
                   </td>
+                  <td className="p-4 max-w-[200px]">
+                    {editingNotes === lead.id ? (
+                      <div className="flex gap-1">
+                        <input
+                          type="text"
+                          value={noteValue}
+                          onChange={(e) => setNoteValue(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && saveNotes(lead.id)}
+                          className="flex-1 px-2 py-1 rounded bg-elevated border border-border text-foreground text-xs outline-none focus:border-accent min-w-0"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => saveNotes(lead.id)}
+                          className="text-xs px-2 py-1 rounded bg-accent text-white"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => startEditNotes(lead)}
+                        className="text-xs text-muted hover:text-foreground cursor-pointer text-left truncate block w-full"
+                        title={lead.notes || "Click to add notes"}
+                      >
+                        {lead.notes || "Add note..."}
+                      </button>
+                    )}
+                  </td>
                   <td className="p-4 text-muted">{formatDate(lead.createdAt)}</td>
                 </tr>
               );
@@ -146,7 +191,7 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
                 </div>
                 <span className="text-xl font-heading">{lead.percentage}%</span>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center mb-2">
                 <div className="flex gap-2">
                   <span
                     className="inline-block px-2 py-1 rounded-full text-xs font-medium"
@@ -172,6 +217,29 @@ export default function LeadsTable({ leads, sort, onSortChange, onStatusChange }
                 </div>
                 <span className="text-xs text-muted">{formatDate(lead.createdAt)}</span>
               </div>
+              {/* Mobile notes */}
+              {editingNotes === lead.id ? (
+                <div className="flex gap-1 mt-2">
+                  <input
+                    type="text"
+                    value={noteValue}
+                    onChange={(e) => setNoteValue(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && saveNotes(lead.id)}
+                    className="flex-1 px-2 py-1 rounded bg-elevated border border-border text-foreground text-xs outline-none min-w-0"
+                    autoFocus
+                  />
+                  <button onClick={() => saveNotes(lead.id)} className="text-xs px-2 py-1 rounded bg-accent text-white">
+                    Save
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => startEditNotes(lead)}
+                  className="text-xs text-muted hover:text-foreground mt-1 text-left"
+                >
+                  {lead.notes || "Add note..."}
+                </button>
+              )}
             </div>
           );
         })}

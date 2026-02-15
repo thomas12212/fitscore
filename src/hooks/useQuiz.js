@@ -16,6 +16,7 @@ export default function useQuiz(template) {
   const [leadData, setLeadData] = useState({ name: "", email: "" });
   const [results, setResults] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [percentile, setPercentile] = useState(null);
 
   const questions = useMemo(() => flattenQuestions(template), [template]);
   const totalQuestions = questions.length;
@@ -63,7 +64,7 @@ export default function useQuiz(template) {
 
       // Submit to API
       try {
-        await fetch("/api/leads", {
+        const res = await fetch("/api/leads", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -79,6 +80,13 @@ export default function useQuiz(template) {
             categoryScores: scoreData.categoryScores,
           }),
         });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.percentile !== undefined) {
+            setPercentile(data.percentile);
+          }
+        }
       } catch (err) {
         console.error("Failed to submit lead:", err);
       }
@@ -99,6 +107,7 @@ export default function useQuiz(template) {
     leadData,
     results,
     isSubmitting,
+    percentile,
     selectOption,
     nextQuestion,
     prevQuestion,

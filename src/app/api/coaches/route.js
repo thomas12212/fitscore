@@ -6,7 +6,7 @@ import { generateCoachId, generateQuizId, hashPassword } from "@/lib/utils";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, templateId, password, customizations } = body;
+    const { name, email, templateId, password, customizations } = body;
 
     if (!name || !name.trim()) {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -29,11 +29,12 @@ export async function POST(request) {
 
     // Create coach
     await db.execute({
-      sql: `INSERT INTO coaches (id, name, template_id, customizations, dashboard_password_hash)
-            VALUES (?, ?, ?, ?, ?)`,
+      sql: `INSERT INTO coaches (id, name, email, template_id, customizations, dashboard_password_hash)
+            VALUES (?, ?, ?, ?, ?, ?)`,
       args: [
         coachId,
         name.trim(),
+        email?.trim() || null,
         templateId,
         JSON.stringify(customizations || {}),
         passwordHash,

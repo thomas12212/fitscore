@@ -13,6 +13,13 @@ export default function DashboardView({ coachId, password, plan }) {
   const [tierFilter, setTierFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [copied, setCopied] = useState(null);
+  const [analytics, setAnalytics] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [coachEmail, setCoachEmail] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const [embedCopied, setEmbedCopied] = useState(null);
 
   // New quiz form state
   const [showNewQuiz, setShowNewQuiz] = useState(false);
@@ -22,13 +29,15 @@ export default function DashboardView({ coachId, password, plan }) {
 
   const templates = getTemplateList();
 
-  // Fetch quizzes
+  // Fetch quizzes + coach settings
   const fetchQuizzes = useCallback(async () => {
     try {
       const res = await fetch(`/api/coaches/${coachId}`, {});
       if (res.ok) {
         const json = await res.json();
         setQuizzes(json.quizzes || []);
+        if (json.email) setCoachEmail(json.email);
+        if (json.webhookUrl) setWebhookUrl(json.webhookUrl);
       }
     } catch (err) {
       console.error("Failed to fetch quizzes:", err);
@@ -138,10 +147,58 @@ export default function DashboardView({ coachId, password, plan }) {
     setCreatingQuiz(false);
   }
 
+  async function handleNotesChange(leadId, notes) {
+    try {
+      await fetch(`/api/leads/${coachId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-dashboard-password": password,
+        },
+        body: JSON.stringify({ leadId, notes }),
+      });
+
+      setData((prev) => ({
+        ...prev,
+        leads: prev.leads.map((lead) =>
+          lead.id === leadId ? { ...lead, notes } : lead
+        ),
+      }));
+    } catch (err) {
+      console.error("Failed to update notes:", err);
+    }
+  }
+
+  async function handleSaveSettings() {
+    setSavingSettings(true);
+    try {
+      await fetch(`/api/coaches/${coachId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-dashboard-password": password,
+        },
+        body: JSON.stringify({ email: coachEmail, webhookUrl }),
+      });
+      setSettingsSaved(true);
+      setTimeout(() => setSettingsSaved(false), 2000);
+    } catch {
+      alert("Failed to save settings");
+    }
+    setSavingSettings(false);
+  }
+
   function copyLink(url, quizId) {
     navigator.clipboard.writeText(url);
     setCopied(quizId);
     setTimeout(() => setCopied(null), 2000);
+  }
+
+  function copyEmbed(quizId, quizUrl) {
+    const code = `<iframe src="${quizUrl}" width="100%" height="700" frameborder="0" style="border:none;border-radius:12px;"></iframe>`;
+    navigator.clipboard.writeText(code);
+    setEmbedCopied(quizId);
+    setTimeout(() => setEmbedCopied(null), 2000);
   }
 
   if (loading && !data) {
@@ -245,6 +302,12 @@ export default function DashboardView({ coachId, password, plan }) {
                   >
                     {copied === quiz.id ? "Copied!" : "Copy Link"}
                   </button>
+                  <button
+                    onClick={() => copyEmbed(quiz.id, quiz.quizUrl)}
+                    className="text-xs font-medium px-3 py-1.5 rounded-lg bg-surface border border-border hover:border-accent transition-colors"
+                  >
+                    {embedCopied === quiz.id ? "Copied!" : "Embed"}
+                  </button>
                 </div>
               </div>
             ))}
@@ -343,7 +406,57 @@ export default function DashboardView({ coachId, password, plan }) {
         )}
       </div>
 
-      <LeadsTable leads={data.leads} sort={sort} onSortChange={setSort} onStatusChange={handleStatusChange} />
+      <LeadsTable leads={data.leads} sort={sort} onSortChange={setSort} onStatusChange={handleStatusChange} onNotesChange={handleNotesChange} />
+
+      {/* Settings Section */}
+      <div className="mt-8 bg-surface rounded-xl p-5">
+        <button
+          onClick={() => setShowSettings((v) => !v)}
+          className="flex justify-between items-center w-full"
+        >
+          <h2 className="text-lg font-heading text-gradient-accent">SETTINGS</h2>
+          <span className="text-muted text-sm">{showSettings ? "Hide" : "Show"}</span>
+        </button>
+
+        {showSettings && (
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="block text-sm text-muted mb-1">Notification Email</label>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={coachEmail}
+                onChange={(e) => setCoachEmail(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-elevated border border-border text-foreground placeholder-muted text-sm outline-none focus:border-accent"
+              />
+              <p className="text-xs text-muted mt-1">Get emailed when a new lead completes your quiz.</p>
+            </div>
+            <div>
+              <label className="block text-sm text-muted mb-1">Webhook URL (Pro)</label>
+              <input
+                type="url"
+                placeholder="https://hooks.zapier.com/..."
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-elevated border border-border text-foreground placeholder-muted text-sm outline-none focus:border-accent"
+                disabled={plan !== "pro"}
+              />
+              <p className="text-xs text-muted mt-1">
+                {plan === "pro"
+                  ? "Sends lead data as JSON POST to this URL on every new quiz completion. Works with Zapier, Make, or any webhook endpoint."
+                  : "Upgrade to Pro to use webhook integrations."}
+              </p>
+            </div>
+            <button
+              onClick={handleSaveSettings}
+              disabled={savingSettings}
+              className={`btn-primary text-sm py-2 px-4 ${savingSettings ? "opacity-60" : ""}`}
+            >
+              {settingsSaved ? "Saved!" : savingSettings ? "Saving..." : "Save Settings"}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

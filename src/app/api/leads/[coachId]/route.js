@@ -102,6 +102,7 @@ export async function GET(request, { params }) {
       status: row.status || "new",
       quizName: row.quiz_name || null,
       quizId: row.quiz_id || null,
+      notes: row.notes || "",
       categoryScores: JSON.parse(row.category_scores || "{}"),
       createdAt: row.created_at,
     }));
@@ -149,19 +150,30 @@ export async function PATCH(request, { params }) {
     }
 
     const body = await request.json();
-    const { leadId, status } = body;
+    const { leadId, status, notes } = body;
 
-    if (!leadId || !LEAD_STATUSES.includes(status)) {
-      return NextResponse.json(
-        { error: "Invalid lead ID or status" },
-        { status: 400 }
-      );
+    if (!leadId) {
+      return NextResponse.json({ error: "Lead ID required" }, { status: 400 });
     }
 
-    await db.execute({
-      sql: "UPDATE leads SET status = ? WHERE id = ? AND coach_id = ?",
-      args: [status, leadId, coachId],
-    });
+    // Update status
+    if (status !== undefined) {
+      if (!LEAD_STATUSES.includes(status)) {
+        return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+      }
+      await db.execute({
+        sql: "UPDATE leads SET status = ? WHERE id = ? AND coach_id = ?",
+        args: [status, leadId, coachId],
+      });
+    }
+
+    // Update notes
+    if (notes !== undefined) {
+      await db.execute({
+        sql: "UPDATE leads SET notes = ? WHERE id = ? AND coach_id = ?",
+        args: [notes, leadId, coachId],
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

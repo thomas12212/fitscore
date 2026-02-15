@@ -1,11 +1,28 @@
 "use client";
+import { useEffect, useRef } from "react";
 import useQuiz from "@/hooks/useQuiz";
 import QuizIntro from "./QuizIntro";
 import QuizQuestion from "./QuizQuestion";
 import QuizLeadCapture from "./QuizLeadCapture";
 import QuizResults from "./QuizResults";
 
+function trackEvent(quizId, eventType) {
+  fetch("/api/quiz-events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quizId, eventType }),
+  }).catch(() => {});
+}
+
 export default function QuizEngine({ template, coachId, quizId, coachName, customizations }) {
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    if (quizId && !hasTrackedView.current) {
+      trackEvent(quizId, "view");
+      hasTrackedView.current = true;
+    }
+  }, [quizId]);
   const {
     screen,
     currentQuestion,
@@ -15,6 +32,7 @@ export default function QuizEngine({ template, coachId, quizId, coachName, custo
     answers,
     results,
     isSubmitting,
+    percentile,
     selectOption,
     nextQuestion,
     prevQuestion,
@@ -39,7 +57,10 @@ export default function QuizEngine({ template, coachId, quizId, coachName, custo
             template={template}
             customizations={customizations}
             coachName={coachName}
-            onStart={startQuiz}
+            onStart={() => {
+              if (quizId) trackEvent(quizId, "start");
+              startQuiz();
+            }}
           />
         )}
 
@@ -70,6 +91,8 @@ export default function QuizEngine({ template, coachId, quizId, coachName, custo
             results={results}
             template={template}
             customizations={customizations}
+            percentile={percentile}
+            quizId={quizId}
           />
         )}
       </div>

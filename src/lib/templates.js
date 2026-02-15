@@ -124,6 +124,11 @@ export const templates = {
         warmth: "cold",
         description:
           "You're at the beginning of your muscle-building journey — and that's exactly the right place to start. With the right guidance, structured training, and nutrition plan, you'll see results faster than you think.",
+        recommendations: [
+          "Start with a simple 3-day full-body program focused on compound lifts like squats, bench press, and rows to build a strength foundation.",
+          "Calculate your maintenance calories and add 300-500 calories per day with at least 0.8g of protein per pound of bodyweight to fuel muscle growth.",
+          "Prioritize learning proper form on the big lifts before chasing heavy weight — recording your sets on video is a free way to self-check technique.",
+        ],
       },
       {
         name: "Building Foundation",
@@ -131,6 +136,11 @@ export const templates = {
         warmth: "warm",
         description:
           "You've got some habits forming but there are clear gaps holding you back. Your training or nutrition (or both) need tightening up. A coach would fill in the blanks and accelerate your progress significantly.",
+        recommendations: [
+          "Switch from random workouts to a structured push/pull/legs or upper/lower split with built-in progressive overload each week.",
+          "Start tracking your protein intake daily using a free app — hitting your protein target consistently is the single biggest nutrition lever for building muscle.",
+          "Add 2-3 minutes of rest between heavy compound sets to maximize strength output and muscle recruitment per session.",
+        ],
       },
       {
         name: "Making Progress",
@@ -138,6 +148,11 @@ export const templates = {
         warmth: "hot",
         description:
           "You're doing a lot right — but you've probably noticed gains slowing down. This is the plateau zone where strategic coaching makes the biggest difference. Fine-tuning your approach will unlock your next level.",
+        recommendations: [
+          "Implement a periodized training block with a dedicated hypertrophy phase (8-12 reps) followed by a strength phase (4-6 reps) to break through your plateau.",
+          "Cycle your calorie surplus with higher intake on training days and maintenance on rest days to maximize muscle gain while minimizing fat accumulation.",
+          "Add targeted weak-point training by including isolation work for lagging muscle groups at the end of your sessions twice per week.",
+        ],
       },
       {
         name: "Ready to Transform",
@@ -145,6 +160,11 @@ export const templates = {
         warmth: "fire",
         description:
           "Your discipline is rare. You have the habits, the consistency, and the drive. At this level, expert coaching isn't about motivation — it's about optimization. The marginal gains that separate good from exceptional.",
+        recommendations: [
+          "Dial in advanced programming variables like tempo manipulation, mechanical drop sets, and intra-set stretching to drive hypertrophy past your genetic baseline.",
+          "Schedule a DEXA scan or hydrostatic body composition test every 8 weeks to track lean mass vs. fat changes with precision instead of relying on the scale alone.",
+          "Optimize your peri-workout nutrition with fast-digesting carbs and protein timed around your training window to maximize muscle protein synthesis and recovery.",
+        ],
       },
     ],
   },
@@ -274,6 +294,11 @@ export const templates = {
         warmth: "cold",
         description:
           "You're at the beginning — and that takes courage to admit. The good news? You have the most room for change, and small shifts in your routine will create the biggest visible results.",
+        recommendations: [
+          "Commit to just 3 workouts per week of 30 minutes each — consistency with a small commitment beats sporadic intense sessions every time.",
+          "Start by adding one serving of protein to each meal (eggs at breakfast, chicken at lunch, fish at dinner) before worrying about counting every calorie.",
+          "Schedule your workouts like appointments in your calendar so they become non-negotiable parts of your week rather than things you squeeze in if you have time.",
+        ],
       },
       {
         name: "Building Foundation",
@@ -281,6 +306,11 @@ export const templates = {
         warmth: "warm",
         description:
           "You have some good habits but inconsistency is holding you back. You know what to do but struggle to do it consistently. The right support system would change everything for you.",
+        recommendations: [
+          "Prep your meals for the week every Sunday to remove daily decision fatigue — having healthy food ready to grab is the number one consistency hack.",
+          "Replace one cardio-only session per week with resistance training to build lean muscle, which raises your resting metabolism and accelerates fat loss long-term.",
+          "Set a weekly check-in habit where you take a progress photo and log your measurements — visible progress is the strongest motivator when willpower fades.",
+        ],
       },
       {
         name: "Making Progress",
@@ -288,6 +318,11 @@ export const templates = {
         warmth: "hot",
         description:
           "You're putting in the work and it shows. But you've hit that frustrating plateau where effort doesn't match results. This is exactly where expert guidance makes the biggest difference.",
+        recommendations: [
+          "Introduce progressive overload by increasing weight, reps, or sets each week in your strength exercises — doing the same workout repeatedly is the top reason for plateaus.",
+          "Swap your current deficit for a reverse diet by slowly increasing calories over 4-6 weeks to reset your metabolism before starting a fresh fat-loss phase.",
+          "Add one HIIT session and one active recovery session (yoga or walking) per week to your existing routine to break through the body composition stall.",
+        ],
       },
       {
         name: "Ready to Transform",
@@ -295,6 +330,11 @@ export const templates = {
         warmth: "fire",
         description:
           "Your dedication is impressive. You have the discipline and the drive — now it's about precision. A coach at this stage becomes your strategist, helping you optimize every detail for maximum results.",
+        recommendations: [
+          "Fine-tune your macros by cycling carbohydrates — higher carbs on heavy training days and lower carbs on rest days — to optimize body composition without losing energy.",
+          "Incorporate periodized training blocks that alternate between muscle-building phases and metabolic conditioning phases every 4-6 weeks for continuous adaptation.",
+          "Prioritize sleep quality by establishing a consistent bedtime routine and aiming for 7-8 hours — sleep is the most underrated factor in body recomposition at your level.",
+        ],
       },
     ],
   },
@@ -424,6 +464,11 @@ export const templates = {
         warmth: "cold",
         description:
           "A cut might not be the right move yet. Building better baseline habits first will set you up for a much more successful shred when the time is right. A coach can help you build that foundation.",
+        recommendations: [
+          "Spend 2-4 weeks tracking your current food intake without changing anything so you know your true maintenance calories before attempting a deficit.",
+          "Build the habit of hitting the gym at least 4 days per week with a basic strength program — you need a training foundation before a cut will produce visible results.",
+          "Get your sleep to a consistent 7+ hours per night first, because cutting on poor sleep massively increases muscle loss and hunger hormones.",
+        ],
       },
       {
         name: "Building Foundation",
@@ -431,6 +476,11 @@ export const templates = {
         warmth: "warm",
         description:
           "You have some of the pieces but a cut will be challenging without more structure. The discipline gaps in your nutrition or training will become magnified in a deficit. Coaching would prevent the common mistakes.",
+        recommendations: [
+          "Set a moderate deficit of 300-500 calories below maintenance and commit to it for 4 straight weeks before adjusting — patience beats aggressive restriction every time.",
+          "Create a weekend meal plan just as detailed as your weekday plan, since unstructured weekends are the most common place where cuts fall apart.",
+          "Keep your protein at 1g per pound of bodyweight daily to preserve muscle mass while in a deficit — this is non-negotiable during a cut.",
+        ],
       },
       {
         name: "Making Progress",
@@ -438,6 +488,11 @@ export const templates = {
         warmth: "hot",
         description:
           "You're in a solid position to start a cut. Your habits are decent but expert guidance will help you preserve muscle, manage energy, and actually get to the finish line instead of falling off at week 6.",
+        recommendations: [
+          "Maintain your current lifting intensity and volume as long as possible during the cut — only reduce volume when recovery genuinely suffers, not preemptively.",
+          "Add 2-3 low-intensity cardio sessions (brisk walking for 30-45 minutes) per week as your primary tool for increasing energy expenditure instead of slashing more calories.",
+          "Plan a structured refeed day every 10-14 days with carbs at maintenance level to replenish glycogen, boost leptin, and keep training performance from tanking.",
+        ],
       },
       {
         name: "Ready to Transform",
@@ -445,6 +500,11 @@ export const templates = {
         warmth: "fire",
         description:
           "You clearly know what you're doing. At your level, coaching is about optimization — dialing in the details that separate a good cut from a competition-level transformation.",
+        recommendations: [
+          "Implement a diet break protocol — 1-2 weeks at maintenance calories every 6-8 weeks of dieting — to prevent metabolic adaptation and keep fat loss moving.",
+          "Use weekly average weigh-ins instead of daily fluctuations to make data-driven decisions about when to adjust calories, cardio, or refeed frequency.",
+          "Dial in your sodium, water, and fiber intake to manage bloating and water retention so your physique changes are visible and trackable throughout the cut.",
+        ],
       },
     ],
   },
@@ -574,6 +634,11 @@ export const templates = {
         warmth: "cold",
         description:
           "You're exploring and that's great. Figuring out your ideal training style early will save you months of wasted effort. A coach can help you find the right fit from day one.",
+        recommendations: [
+          "Try at least 3 different training styles (strength training, bodyweight work, group fitness) over the next month to discover what genuinely excites you.",
+          "Focus on building a base of general strength and mobility for 4-6 weeks before specializing — a strong foundation makes every training style more effective.",
+          "Join a beginner class or hire a coach for a single introductory session in the style that interests you most to learn proper fundamentals from the start.",
+        ],
       },
       {
         name: "Building Foundation",
@@ -581,6 +646,11 @@ export const templates = {
         warmth: "warm",
         description:
           "You have some experience but haven't fully committed to a style yet. Getting clear on your strengths and preferences will help you progress much faster.",
+        recommendations: [
+          "Pick the one training style you enjoy most and commit to following a structured program in it for at least 8 consecutive weeks before evaluating results.",
+          "Set 2-3 specific performance benchmarks for your chosen style (a target lift, a skill to unlock, or a WOD time to beat) to give your training clear direction.",
+          "Reduce program-hopping by unsubscribing from fitness accounts that promote conflicting training methods — focused input leads to focused output.",
+        ],
       },
       {
         name: "Making Progress",
@@ -588,6 +658,11 @@ export const templates = {
         warmth: "hot",
         description:
           "You know what you like and you're putting in the work. Now it's about refining your approach and getting expert programming tailored to your chosen style.",
+        recommendations: [
+          "Invest in style-specific programming by following a coach who specializes in your chosen discipline rather than generic fitness plans that try to do everything.",
+          "Identify your biggest technical weakness within your style and dedicate 15-20 minutes of focused skill work to it at the start of every session for the next month.",
+          "Start tracking your performance metrics weekly (lifts, times, skills achieved) so you can spot stalls early and adjust programming before frustration sets in.",
+        ],
       },
       {
         name: "Ready to Transform",
@@ -595,6 +670,11 @@ export const templates = {
         warmth: "fire",
         description:
           "You're dialed in and ready for specialized coaching. At your level, the right coach will help you break through plateaus and achieve things you didn't think were possible.",
+        recommendations: [
+          "Seek out a coach with competitive experience or advanced certifications in your specific training style to access the high-level programming that generic coaches cannot provide.",
+          "Structure your training year into mesocycles with distinct goals (strength block, skill block, competition prep) to drive continuous progress instead of grinding the same routine.",
+          "Align your nutrition, recovery, and accessory work specifically to the demands of your chosen style — what fuels a powerlifter is different from what fuels a CrossFit athlete.",
+        ],
       },
     ],
   },

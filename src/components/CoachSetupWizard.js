@@ -18,6 +18,7 @@ export default function CoachSetupWizard() {
     bookingUrl: "",
   });
   const [coachName, setCoachName] = useState("");
+  const [coachEmail, setCoachEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -73,6 +74,7 @@ export default function CoachSetupWizard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: coachName.trim(),
+          email: coachEmail.trim() || undefined,
           templateId: selectedTemplate,
           password,
           customizations: cleanCustom,
@@ -305,6 +307,17 @@ export default function CoachSetupWizard() {
                   className={`w-full px-4 py-3 rounded-xl bg-elevated border-2 text-foreground placeholder-muted outline-none transition-colors ${
                     errors.name ? "border-red-500" : "border-border focus:border-accent"
                   }`}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-muted mb-1">Email (optional)</label>
+                <input
+                  type="email"
+                  placeholder="you@email.com — get notified on new leads"
+                  value={coachEmail}
+                  onChange={(e) => setCoachEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-elevated border-2 border-border text-foreground placeholder-muted outline-none transition-colors focus:border-accent"
                 />
               </div>
 

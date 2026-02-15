@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
+import { verifyPassword } from "@/lib/utils";
 
 export async function GET(request, { params }) {
   try {
@@ -7,7 +8,7 @@ export async function GET(request, { params }) {
     const db = getDb();
 
     const result = await db.execute({
-      sql: `SELECT id, name, template_id, customizations, plan, created_at
+      sql: `SELECT id, name, template_id, customizations, plan, email, webhook_url, created_at
             FROM coaches WHERE id = ?`,
       args: [id],
     });
@@ -43,6 +44,8 @@ export async function GET(request, { params }) {
       templateId: coach.template_id,
       customizations: JSON.parse(coach.customizations || "{}"),
       plan: coach.plan || "free",
+      email: coach.email || "",
+      webhookUrl: coach.webhook_url || "",
       createdAt: coach.created_at,
       quizzes,
     });
@@ -50,6 +53,58 @@ export async function GET(request, { params }) {
     console.error("Error fetching coach:", error);
     return NextResponse.json(
       { error: "Failed to fetch coach" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request, { params }) {
+  try {
+    const { id } = await params;
+    const password = request.headers.get("x-dashboard-password");
+
+    if (!password) {
+      return NextResponse.json({ error: "Password required" }, { status: 401 });
+    }
+
+    const db = getDb();
+
+    const coachResult = await db.execute({
+      sql: "SELECT id, dashboard_password_hash FROM coaches WHERE id = ?",
+      args: [id],
+    });
+
+    if (coachResult.rows.length === 0) {
+      return NextResponse.json({ error: "Coach not found" }, { status: 404 });
+    }
+
+    const valid = await verifyPassword(password, coachResult.rows[0].dashboard_password_hash);
+    if (!valid) {
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { email, webhookUrl } = body;
+
+    if (email !== undefined) {
+      await db.execute({
+        sql: "UPDATE coaches SET email = ? WHERE id = ?",
+        args: [email || null, id],
+      });
+    }
+
+    if (webhookUrl !== undefined) {
+      await db.execute({
+        sql: "UPDATE coaches SET webhook_url = ? WHERE id = ?",
+        args: [webhookUrl || null, id],
+      });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error updating coach:", error);
+    return NextResponse.json(
+      { error: "Failed to update settings" },
       { status: 500 }
     );
   }
