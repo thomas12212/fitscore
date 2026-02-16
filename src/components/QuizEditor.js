@@ -536,9 +536,9 @@ export default function QuizEditor({ coachId, quizId, quizName, template, custom
               .map((tier, tierIdx) => {
                 const warmthColors = {
                   cold: "#6b7280",
-                  warm: "#f59e0b",
-                  hot: "#ef4444",
-                  fire: "#ff4d4d",
+                  warm: "#facc15",
+                  hot: "#f97316",
+                  fire: "#ef4444",
                 };
                 return (
                   <div key={tierIdx} className="bg-surface rounded-xl p-5">

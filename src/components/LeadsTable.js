@@ -3,9 +3,9 @@ import { useState } from "react";
 
 const warmthColors = {
   "Just Getting Started": { bg: "#6b728020", text: "#6b7280", border: "#6b728040" },
-  "Building Foundation": { bg: "#f59e0b20", text: "#f59e0b", border: "#f59e0b40" },
-  "Making Progress": { bg: "#ef444420", text: "#ef4444", border: "#ef444440" },
-  "Ready to Transform": { bg: "#ff4d4d20", text: "#ff4d4d", border: "#ff4d4d40" },
+  "Building Foundation": { bg: "#facc1520", text: "#facc15", border: "#facc1540" },
+  "Making Progress": { bg: "#f9731620", text: "#f97316", border: "#f9731640" },
+  "Ready to Transform": { bg: "#ef444420", text: "#ef4444", border: "#ef444440" },
 };
 
 const statusConfig = {

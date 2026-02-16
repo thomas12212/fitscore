@@ -343,9 +343,9 @@ export default function DashboardView({ coachId, password, plan }) {
               if (pct === 0) return null;
               const colors = {
                 "Just Getting Started": "#6b7280",
-                "Building Foundation": "#f59e0b",
-                "Making Progress": "#ef4444",
-                "Ready to Transform": "#ff4d4d",
+                "Building Foundation": "#facc15",
+                "Making Progress": "#f97316",
+                "Ready to Transform": "#ef4444",
               };
               return (
                 <div
@@ -364,9 +364,9 @@ export default function DashboardView({ coachId, password, plan }) {
               const count = data.stats.tierDistribution[tier] || 0;
               const colors = {
                 "Just Getting Started": "#6b7280",
-                "Building Foundation": "#f59e0b",
-                "Making Progress": "#ef4444",
-                "Ready to Transform": "#ff4d4d",
+                "Building Foundation": "#facc15",
+                "Making Progress": "#f97316",
+                "Ready to Transform": "#ef4444",
               };
               return (
                 <div key={tier} className="flex items-center gap-1 text-xs text-muted">

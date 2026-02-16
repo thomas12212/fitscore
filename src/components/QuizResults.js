@@ -37,9 +37,9 @@ export default function QuizResults({ results, template, customizations, percent
 
   const warmthColors = {
     cold: "#6b7280",
-    warm: "#f59e0b",
-    hot: "#ef4444",
-    fire: "#ff4d4d",
+    warm: "#facc15",
+    hot: "#f97316",
+    fire: "#ef4444",
   };
 
   function handleBookingClick() {
