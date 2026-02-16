@@ -1,4 +1,4 @@
-import { getTemplate } from "@/lib/templates";
+import { getTemplate, mergeTemplate } from "@/lib/templates";
 import { getDb } from "@/lib/db";
 import QuizEngine from "@/components/QuizEngine";
 import PoweredByBadge from "@/components/PoweredByBadge";
@@ -18,11 +18,12 @@ export async function generateMetadata({ params }) {
     if (result.rows.length === 0) return { title: "Quiz Not Found" };
 
     const quiz = result.rows[0];
-    const template = getTemplate(quiz.template_id);
+    const baseTemplate = getTemplate(quiz.template_id);
     const customizations = JSON.parse(quiz.customizations || "{}");
+    const template = baseTemplate ? mergeTemplate(baseTemplate, customizations) : null;
 
     return {
-      title: customizations.headline || template?.defaultHeadline || quiz.quiz_name || "Fitness Assessment",
+      title: template?.defaultHeadline || quiz.quiz_name || "Fitness Assessment",
       description: template?.defaultSubheadline || "Take this quick fitness assessment",
     };
   } catch {
@@ -61,8 +62,9 @@ export default async function QuizPage({ params }) {
     notFound();
   }
 
-  const template = getTemplate(quiz.templateId);
-  if (!template) notFound();
+  const baseTemplate = getTemplate(quiz.templateId);
+  if (!baseTemplate) notFound();
+  const template = mergeTemplate(baseTemplate, quiz.customizations);
 
   const showBranding = coach.plan !== "pro";
 

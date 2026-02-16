@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { getTemplateList } from "@/lib/templates";
+import { getTemplateList, getTemplate, mergeTemplate } from "@/lib/templates";
 import StatsCards from "./StatsCards";
 import LeadsTable from "./LeadsTable";
 
@@ -219,12 +219,21 @@ export default function DashboardView({ coachId, password, plan }) {
 
   if (!data) return null;
 
-  const tiers = [
-    "Just Getting Started",
-    "Building Foundation",
-    "Making Progress",
-    "Ready to Transform",
-  ];
+  // Derive tier names dynamically from quizzes (supports custom tier names)
+  const tiers = (() => {
+    const names = new Set();
+    quizzes.forEach((quiz) => {
+      const base = getTemplate(quiz.templateId);
+      if (!base) return;
+      const merged = mergeTemplate(base, quiz.customizations || {});
+      merged.tiers.forEach((t) => names.add(t.name));
+    });
+    if (names.size === 0) {
+      // Fallback defaults
+      return ["Just Getting Started", "Building Foundation", "Making Progress", "Ready to Transform"];
+    }
+    return Array.from(names);
+  })();
 
   return (
     <div className="animate-fade-up">
@@ -296,6 +305,12 @@ export default function DashboardView({ coachId, password, plan }) {
                   {!quiz.active && (
                     <span className="text-xs text-muted bg-surface px-2 py-0.5 rounded">Inactive</span>
                   )}
+                  <a
+                    href={`/dashboard/${coachId}/edit/${quiz.id}`}
+                    className="text-xs font-medium px-3 py-1.5 rounded-lg bg-surface border border-border hover:border-accent transition-colors no-underline text-foreground"
+                  >
+                    Edit
+                  </a>
                   <button
                     onClick={() => copyLink(quiz.quizUrl, quiz.id)}
                     className="text-xs font-medium px-3 py-1.5 rounded-lg bg-surface border border-border hover:border-accent transition-colors"

@@ -695,3 +695,21 @@ export function getTemplateList() {
 export function getTemplate(id) {
   return templates[id] || null;
 }
+
+export function mergeTemplate(baseTemplate, customizations = {}) {
+  return {
+    ...baseTemplate,
+    defaultHeadline: customizations.headline || baseTemplate.defaultHeadline,
+    defaultSubheadline: customizations.subheadline || baseTemplate.defaultSubheadline,
+    defaultColors: {
+      primary: customizations.primaryColor || baseTemplate.defaultColors.primary,
+      secondary: customizations.secondaryColor || baseTemplate.defaultColors.secondary,
+    },
+    categories: customizations.categories
+      ? JSON.parse(JSON.stringify(customizations.categories))
+      : JSON.parse(JSON.stringify(baseTemplate.categories)),
+    tiers: customizations.tiers
+      ? JSON.parse(JSON.stringify(customizations.tiers))
+      : JSON.parse(JSON.stringify(baseTemplate.tiers)),
+  };
+}
